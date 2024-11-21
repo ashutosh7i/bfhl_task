@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BFHL Task Application
 
-## Getting Started
+This is a Next.js application that implements the Bajaj Finserv Health Dev Challenge (Qualifier 1). It includes both a backend API and a frontend interface for processing and displaying data.
 
-First, run the development server:
+## Tech Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Next.js 13+ (App Router)
+- TypeScript
+- Tailwind CSS
+- shadcn/ui components
+- file-type npm package for MIME type detection
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## API Endpoints
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### GET /api/bfhl
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Returns a simple operation code.
 
-## Learn More
+Response:
+```json
+{
+  "operation_code": 1
+}
 
-To learn more about Next.js, take a look at the following resources:
+POST /api/bfhl
+Processes input data and optionally a file.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Payload with file:
+{
+  "data": ["M","1","334","4","B","Z","a","7"],
+  "file_b64":"BASE_64_STRING"
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Payload without file:
+{
+  "data": ["A","C","Z","c","i"]
+}
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+Response includes processed data such as numbers, alphabets, highest lowercase alphabet, and prime number detection. If a file is included, it also provides file information.
+
+Frontend
+The frontend provides a user interface for submitting JSON data, which is then processed by the API. It includes:
+
+JSON input field
+Multi-select dropdown for filtering results
+Display of processed data based on user selection
+File information display (when applicable)
+Getting Started
+Clone the repository
+Install dependencies: npm install
+Run the development server: npm run dev
+Open http://localhost:3000 in your browser
+Deployment
+This project is ready for deployment on platforms like Vercel, Netlify, or any other Next.js-compatible hosting service.
+
+
+This README provides an overview of the project, its tech stack, API endpoints with example payloads, and instructions for getting started. It covers both the backend and frontend aspects of the application.
