@@ -1,44 +1,32 @@
 "use client";
 
-// imports
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Head from "next/head";
 
+interface ResponseData {
+  alphabets: string[];
+  numbers: string[];
+  highest_lowercase_alphabet: string[];
+  file_valid: boolean;
+  file_mime_type?: string;
+  file_size_kb?: string;
+}
+
 export default function BFHLTask() {
-  // states
   const [jsonInput, setJsonInput] = useState("");
   const [error, setError] = useState("");
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-
-  interface ResponseData {
-    alphabets: string[];
-    numbers: string[];
-    highest_lowercase_alphabet: string;
-    file_valid: boolean;
-    file_mime_type?: string;
-    file_size_kb?: number;
-  }
+  const [selectedOptions, setSelectedOptions] = useState({
+    numbers: false,
+    alphabets: false,
+    highestLowercase: false,
+  });
 
   const [response, setResponse] = useState<ResponseData | null>(null);
 
-  interface RenderedResponse {
-    alphabets?: string[];
-    numbers?: string[];
-    highest_lowercase_alphabet?: string;
-  }
-
-  // function to handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -57,19 +45,34 @@ export default function BFHLTask() {
     }
   };
 
-  const renderResponse = () => {
+  const renderFilteredResponse = () => {
     if (!response) return null;
 
-    const renderedResponse: RenderedResponse = {};
-    if (selectedOptions.includes("alphabets"))
-      renderedResponse.alphabets = response.alphabets;
-    if (selectedOptions.includes("numbers"))
-      renderedResponse.numbers = response.numbers;
-    if (selectedOptions.includes("highestLowercase"))
-      renderedResponse.highest_lowercase_alphabet =
-        response.highest_lowercase_alphabet;
-
-    return <pre>{JSON.stringify(renderedResponse, null, 2)}</pre>;
+    return (
+      <Card className="mt-4">
+        <CardHeader>
+          <CardTitle>Filtered Response</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {selectedOptions.numbers && (
+            <div>
+              <strong>Numbers:</strong> {response.numbers.join(", ")}
+            </div>
+          )}
+          {selectedOptions.alphabets && (
+            <div>
+              <strong>Alphabets:</strong> {response.alphabets.join(", ")}
+            </div>
+          )}
+          {selectedOptions.highestLowercase && (
+            <div>
+              <strong>Highest Lowercase Alphabet:</strong>{" "}
+              {response.highest_lowercase_alphabet.join(", ")}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    );
   };
 
   const renderFileInfo = () => {
@@ -79,11 +82,9 @@ export default function BFHLTask() {
       <Card className="mt-4">
         <CardHeader>
           <CardTitle>File Information</CardTitle>
-          <CardContent>
-            <p>File is valid and present.</p>
-          </CardContent>
         </CardHeader>
         <CardContent>
+          <p>File is valid and present.</p>
           <p>MIME Type: {response.file_mime_type}</p>
           <p>Size: {response.file_size_kb} KB</p>
         </CardContent>
@@ -94,9 +95,11 @@ export default function BFHLTask() {
   return (
     <div className="container mx-auto p-4">
       <Head>
-        <title>ABCD123</title> {/* Replace with your actual roll number */}
+        <title>ABCD123</title>
       </Head>
-      <h1 className="text-2xl font-bold mb-4">BFHL Task</h1>
+      <h1 className="text-2xl font-bold mb-4">Bajaj Finserv Health Dev Challenge</h1>
+
+      <h2 className="text-xl font-semibold mb-2">Enter Json data: </h2>
       <form onSubmit={handleSubmit} className="mb-4">
         <Input
           value={jsonInput}
@@ -104,37 +107,47 @@ export default function BFHLTask() {
           placeholder='Enter JSON (e.g., { "data": ["A","C","z"], "file_b64": "..." })'
           className="mb-2"
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="bg-blue-600">Submit</Button>
+        <br />
       </form>
       {error && (
-        <Alert variant="destructive" className="mb-4">
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+        <div className="text-red-500 mb-4">{error}</div>
       )}
       {response && (
         <div className="mb-4">
-          <h2 className="text-xl font-semibold mb-2">
-            Select Options to Display:
-          </h2>
-          <Select
-            value={selectedOptions.join(',')}
-            onValueChange={(value) => setSelectedOptions(value.split(','))}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select options" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="alphabets">Alphabets</SelectItem>
-              <SelectItem value="numbers">Numbers</SelectItem>
-              <SelectItem value="highestLowercase">
-                Highest Lowercase Alphabet
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <h2 className="text-xl font-semibold mb-2">Multi Filter</h2>
+          <div className="flex space-x-4">
+            <label className="flex items-center">
+              <Checkbox
+                checked={selectedOptions.numbers}
+                onCheckedChange={(checked) =>
+                  setSelectedOptions({ ...selectedOptions, numbers: checked as boolean })
+                }
+              />
+              <span className="ml-2">Numbers</span>
+            </label>
+            <label className="flex items-center">
+              <Checkbox
+                checked={selectedOptions.alphabets}
+                onCheckedChange={(checked) =>
+                  setSelectedOptions({ ...selectedOptions, alphabets: checked as boolean })
+                }
+              />
+              <span className="ml-2">Alphabets</span>
+            </label>
+            <label className="flex items-center">
+              <Checkbox
+                checked={selectedOptions.highestLowercase}
+                onCheckedChange={(checked) =>
+                  setSelectedOptions({ ...selectedOptions, highestLowercase: checked as boolean })
+                }
+              />
+              <span className="ml-2">Highest Lowercase</span>
+            </label>
+          </div>
         </div>
       )}
-      {renderResponse()}
+      {renderFilteredResponse()}
       {renderFileInfo()}
     </div>
   );
