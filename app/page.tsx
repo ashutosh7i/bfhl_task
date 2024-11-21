@@ -52,6 +52,7 @@ export default function BFHLTask() {
       const data = await res.json();
       setResponse(data);
     } catch (err) {
+      console.error(err);
       setError("Invalid JSON input");
     }
   };
@@ -59,7 +60,7 @@ export default function BFHLTask() {
   const renderResponse = () => {
     if (!response) return null;
 
-    let renderedResponse: RenderedResponse = {};
+    const renderedResponse: RenderedResponse = {};
     if (selectedOptions.includes("alphabets"))
       renderedResponse.alphabets = response.alphabets;
     if (selectedOptions.includes("numbers"))

@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
                     fileSizeKb = (buffer.length / 1024).toFixed(2);
                 }
             } catch (error) {
+                console.error(error);
                 fileValid = false;
             }
         }
@@ -63,6 +64,7 @@ export async function POST(request: NextRequest) {
         // return response
         return NextResponse.json(response, { status: 200 });
     } catch (error) {
+        console.error(error);
         // return error response
         return NextResponse.json({ is_success: false, error: 'Invalid input' }, { status: 400 });
     }
